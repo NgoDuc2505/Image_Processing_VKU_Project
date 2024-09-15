@@ -160,7 +160,7 @@ def perspectiveTranform(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOL
     except:
         return None
     
-def duplicate_folder_image(folderPathName:str, resultFolderName:str = FOLDER_DEFAULT) -> list[dict]:
+def duplicate_folder_image(folderPathName:str, resultFolderName:str = FOLDER_DEFAULT, isoValue:int = 30) -> list[dict]:
     try:
         imgDict: list[dict] = []
         folderSavedImgName = makeFolder(resultFolderName)
@@ -171,13 +171,15 @@ def duplicate_folder_image(folderPathName:str, resultFolderName:str = FOLDER_DEF
             pathCrop = cropImg(f"{folderPathName}/{filename}",f"{fileNameFilter}croped.png",dirSaveImg=folderSavedImgName)
             pathFlip = flipImage(f"{folderPathName}/{filename}",f"{fileNameFilter}flipped.png", dirSaveImg=folderSavedImgName)
             pathRotate = rotateImage(f"{folderPathName}/{filename}",f"{fileNameFilter}rotated.png", dirSaveImg=folderSavedImgName)
-            PatPperspecitveTrans = perspectiveTranform(f"{folderPathName}/{filename}",f"{fileNameFilter}trans.png", dirSaveImg=folderSavedImgName)
+            patPperspecitveTrans = perspectiveTranform(f"{folderPathName}/{filename}",f"{fileNameFilter}trans.png", dirSaveImg=folderSavedImgName)
+            pathChangeISO = isoConfig(f"{folderPathName}/{filename}",f"{fileNameFilter}iso.png", dirSaveImg=folderSavedImgName, valOfv= isoValue)
             dictObject = {
                 'pathResize': pathResize,
                 'pathCrop' : pathCrop,
                 'pathFlip' : pathFlip,
                 'pathRotate': pathRotate,
-                'PatPperspecitveTrans' : PatPperspecitveTrans
+                'patPperspecitveTrans' : patPperspecitveTrans,
+                'pathChangeISO' : pathChangeISO
             }
             imgDict.append(dictObject)
         
@@ -186,4 +188,33 @@ def duplicate_folder_image(folderPathName:str, resultFolderName:str = FOLDER_DEF
         print(e)
         return None
     
-  
+#v1.1.0
+def iso_increase_decrease_switching(v: cv.typing.MatLike, valueOfV: int, mode:int = 0) -> cv.typing.MatLike:
+    #0: increase | 1: decrease
+    try:
+        if (mode > 1 and mode < 0): raise Exception 
+        v = cv.add(v, valueOfV) if mode == 0 else cv.add(v, -valueOfV)
+        v[v > 255] = 255
+        v[v < 0] = 0
+        return v
+    except Exception as e:
+        print(f"MODE has to be 1 or 0 !!:: {e}")
+        return None
+
+def isoConfig(imgPath: str, imgNewSaveName: str, valOfv:int = 30, dirSaveImg: str = FOLDER_DEFAULT) -> list[str]: 
+    try:
+        img = readImg(imgPath)
+        hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+        (h,s,v) = cv.split(hsv) 
+        v1 = iso_increase_decrease_switching(v, valOfv, 0)
+        v2 = iso_increase_decrease_switching(v, valOfv, 1)
+        result_hsv1 = cv.merge((h, s, v1))
+        result_hsv2 = cv.merge((h, s, v2))
+        imgRs = cv.cvtColor(result_hsv1, cv.COLOR_HSV2BGR)
+        imgRs2 = cv.cvtColor(result_hsv2, cv.COLOR_HSV2BGR)
+        fullPath1 = saveImage(f"{dirSaveImg}/Increase{imgNewSaveName}", imgRs)
+        fullPath2 = saveImage(f"{dirSaveImg}/Decrease{imgNewSaveName}", imgRs2)
+        print(f"ISO change has been saved at: {fullPath1} and {fullPath2}")
+        return [fullPath1, fullPath2]
+    except:
+        return None
