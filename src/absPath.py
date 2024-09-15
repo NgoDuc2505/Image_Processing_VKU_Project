@@ -105,7 +105,7 @@ def cropImg(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAULT)
         percentCropBlockHeight = m.floor(0.1 * img.shape[1])
         crop = img[percentCropBlockWidth:(img.shape[0]-percentCropBlockWidth), percentCropBlockHeight:img.shape[1]-percentCropBlockHeight]
         fullPath = saveImage(f'{dirSaveImg}/{imgNewSaveName}',crop)
-        print(f"Resized Image has been saved at: {fullPath}")
+        print(f"Crop Image has been saved at: {fullPath}")
         return fullPath
     except:
         return None
@@ -116,9 +116,29 @@ def flipImage(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAUL
         flipImage = cv.flip(img, 1)
         cropedFlipImage = cropComponent(flipImage)
         fullPath = saveImage(f'{dirSaveImg}/{imgNewSaveName}',flipImage)
-        bonusPath = saveImage(f"{dirSaveImg}/CROP{imgNewSaveName}", cropedFlipImage)
+        bonusPath = saveImage(f"{dirSaveImg}/CROPBONUS{imgNewSaveName}", cropedFlipImage)
         print(f"Flip Image has been saved at: {fullPath} \n with bonus: {bonusPath}")
         return [fullPath, bonusPath]
     except:
         return None
     
+def flipComponent(img: cv.typing.MatLike) -> cv.typing.MatLike:
+    try:
+        flipImage = cv.flip(img, 1)
+        return flipImage
+    except:
+        return None
+
+def rotateImage(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAULT, angle:int = 10) -> list[str]:
+    try:
+        img = readImg(imgPath)
+        (h, w, l) = img.shape
+        mask = cv.getRotationMatrix2D((w//2, h//2), angle, 1.0)
+        rotated = cv.warpAffine(img, mask, dsize=(w,h))
+        rotateWithFlip = flipComponent(rotated)
+        fullPath = saveImage(f"{dirSaveImg}/{imgNewSaveName}", rotated)
+        bonusPath = saveImage(f"{dirSaveImg}/FLIPBONUS{imgNewSaveName}", rotateWithFlip)
+        print(f"Rotate Image has been saved at: {fullPath} \n with bonus: {bonusPath}")
+        return [fullPath, bonusPath]
+    except:
+        return None
