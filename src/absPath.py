@@ -159,3 +159,31 @@ def perspectiveTranform(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOL
         return [fullPath, bonusPath]
     except:
         return None
+    
+def duplicate_folder_image(folderPathName:str, resultFolderName:str = FOLDER_DEFAULT) -> list[dict]:
+    try:
+        imgDict: list[dict] = []
+        folderSavedImgName = makeFolder(resultFolderName)
+        fullPathFolder = load(folderPathName)
+        for filename in os.listdir(fullPathFolder):
+            fileNameFilter = filename.split(".")[0]
+            pathResize = resize(f"{folderPathName}/{filename}",f"{fileNameFilter}resize.png", dirSaveImg=folderSavedImgName)
+            pathCrop = cropImg(f"{folderPathName}/{filename}",f"{fileNameFilter}croped.png",dirSaveImg=folderSavedImgName)
+            pathFlip = flipImage(f"{folderPathName}/{filename}",f"{fileNameFilter}flipped.png", dirSaveImg=folderSavedImgName)
+            pathRotate = rotateImage(f"{folderPathName}/{filename}",f"{fileNameFilter}rotated.png", dirSaveImg=folderSavedImgName)
+            PatPperspecitveTrans = perspectiveTranform(f"{folderPathName}/{filename}",f"{fileNameFilter}trans.png", dirSaveImg=folderSavedImgName)
+            dictObject = {
+                'pathResize': pathResize,
+                'pathCrop' : pathCrop,
+                'pathFlip' : pathFlip,
+                'pathRotate': pathRotate,
+                'PatPperspecitveTrans' : PatPperspecitveTrans
+            }
+            imgDict.append(dictObject)
+        
+        return imgDict
+    except Exception as e:
+        print(e)
+        return None
+    
+  

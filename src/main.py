@@ -1,11 +1,7 @@
-import cv2 as cv
 from absPath import *
 
-
-folderSavedImgName = makeFolder('imgDplicated')
-pathResize = resize("img/g.png","res.png", dirSaveImg=folderSavedImgName)
-pathCrop = cropImg("img/g.png","croped.png",dirSaveImg=folderSavedImgName)
-pathFlip = flipImage("img/g.png","flipped.png", dirSaveImg=folderSavedImgName)
-pathFlip = rotateImage("img/g.png","rotated.png", dirSaveImg=folderSavedImgName)
-PatPperspecitveTrans = perspectiveTranform("img/g.png","trans.png", dirSaveImg=folderSavedImgName)
-k = cv.waitKey(0) 
+# Hàm nhận 2 tham số:
+#   -tên folder chứa ảnh gốc
+#   -tên folder chứa kết quả của ảnh được xử lý
+dictionaryImageSet = duplicate_folder_image("img","Result_collection")
+print("dictionaryImageSet: ",dictionaryImageSet)
