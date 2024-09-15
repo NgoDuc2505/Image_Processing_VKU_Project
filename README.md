@@ -10,8 +10,13 @@ This project is a libary for contributing datasets for training model.
 
 ## Features
 
-- Duplicate image from one to eight images
-
+- Duplicate image from one to ten images
+- Resize
+- Iso config (increase and decrease iso property)
+- Perspective transform
+- Rotate
+- Crop
+- Setup directory as an absolute path
 
 
 ## Authors
