@@ -4,7 +4,8 @@ import cv2 as cv
 import math as m
 import numpy as np
 
-ROOT_DIR = 'D:/PersonProject/Project_with_Py/ImageProcessing/'
+# ROOT_DIR = 'D:/PersonProject/Project_with_Py/ImageProcessing/'
+ROOT_DIR = os.getcwd().split('src')[0]
 FOLDER_DEFAULT = "resultSet"
 
 
