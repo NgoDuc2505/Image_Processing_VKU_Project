@@ -40,4 +40,5 @@ Call function
 - "img" is the folder that contains your image source.
 - "Result_collection" is the folder which stores your duplicated images.
 
+[***] Your Python file has to be included in src folder, the images folder will be in the same position as src.
 
