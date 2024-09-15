@@ -19,9 +19,11 @@ def rootDir():
 
 def makeFolder(path: str=FOLDER_DEFAULT):
     try:
-        os.makedirs(f'{ROOT_DIR}{path}')
+        if (not os.path.exists(f'{ROOT_DIR}{path}')):
+            os.makedirs(f'{ROOT_DIR}{path}')
         return path
-    except:
+    except Exception as e:
+        print(f"Error when load file: {e}")
         return None
 
 def readImg(path: str) -> cv.typing.MatLike:
@@ -30,7 +32,7 @@ def readImg(path: str) -> cv.typing.MatLike:
     except:
         return None
     
-def saveImage(imgPath: str,newName: str, image: cv.typing.MatLike) -> str:
+def saveImage(newName: str, image: cv.typing.MatLike) -> str:
     try:
         path = f'{ROOT_DIR}{newName}'
         cv.imwrite(path, image)
@@ -87,6 +89,15 @@ def resizeHalf(image: cv.typing.MatLike) -> cv.typing.MatLike:
     except:
         return None
 
+def cropComponent(imgSrc: cv.typing.MatLike) -> cv.typing.MatLike:
+    try:
+        percentCropBlockWidth = m.floor(0.1 * imgSrc.shape[0])
+        percentCropBlockHeight = m.floor(0.1 * imgSrc.shape[1])
+        crop = imgSrc[percentCropBlockWidth:(imgSrc.shape[0]-percentCropBlockWidth), percentCropBlockHeight:imgSrc.shape[1]]
+        return crop
+    except:
+        return None
+
 def cropImg(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAULT)-> str:
     try:
         img = readImg(imgPath)
@@ -98,3 +109,16 @@ def cropImg(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAULT)
         return fullPath
     except:
         return None
+    
+def flipImage(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAULT) -> list[str]:
+    try:
+        img = readImg(imgPath)
+        flipImage = cv.flip(img, 1)
+        cropedFlipImage = cropComponent(flipImage)
+        fullPath = saveImage(f'{dirSaveImg}/{imgNewSaveName}',flipImage)
+        bonusPath = saveImage(f"{dirSaveImg}/CROP{imgNewSaveName}", cropedFlipImage)
+        print(f"Flip Image has been saved at: {fullPath} \n with bonus: {bonusPath}")
+        return [fullPath, bonusPath]
+    except:
+        return None
+    
