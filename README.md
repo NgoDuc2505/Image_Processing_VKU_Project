@@ -24,8 +24,11 @@ This project is a libary for contributing datasets for training model.
 
 ## Basic Usage
 
+Import libary
+```bash
+  from absPath import *
+```
 Call function
-
 ```bash
   duplicate_folder_image("img","Result_collection")
 ```
