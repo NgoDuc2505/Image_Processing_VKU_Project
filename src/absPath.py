@@ -2,6 +2,7 @@ import os
 from PIL import Image
 import cv2 as cv
 import math as m
+import numpy as np
 
 ROOT_DIR = 'D:/PersonProject/Project_with_Py/ImageProcessing/'
 FOLDER_DEFAULT = "resultSet"
@@ -138,6 +139,22 @@ def rotateImage(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFA
         rotateWithFlip = flipComponent(rotated)
         fullPath = saveImage(f"{dirSaveImg}/{imgNewSaveName}", rotated)
         bonusPath = saveImage(f"{dirSaveImg}/FLIPBONUS{imgNewSaveName}", rotateWithFlip)
+        print(f"Rotate Image has been saved at: {fullPath} \n with bonus: {bonusPath}")
+        return [fullPath, bonusPath]
+    except:
+        return None
+    
+def perspectiveTranform(imgPath: str, imgNewSaveName: str, dirSaveImg: str = FOLDER_DEFAULT) -> list[str]:
+    try:
+        img = readImg(imgPath)
+        (h, w, l) = img.shape
+        pts1 = np.float32([[100,50],[h-50,50],[50,w-50],[h-50,w-50]])
+        pts2 = np.float32([[0,0],[h,80],[100,w],[h,w]])
+        mask = cv.getPerspectiveTransform(pts1,pts2)
+        output = cv.warpPerspective(img, mask, dsize=(w,h))
+        outputWithFlip = flipComponent(output)
+        fullPath = saveImage(f"{dirSaveImg}/{imgNewSaveName}", output)
+        bonusPath = saveImage(f"{dirSaveImg}/FLIPBONUSTRANS{imgNewSaveName}", outputWithFlip)
         print(f"Rotate Image has been saved at: {fullPath} \n with bonus: {bonusPath}")
         return [fullPath, bonusPath]
     except:
