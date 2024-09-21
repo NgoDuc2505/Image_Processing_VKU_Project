@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[scripts]
+dev = "pipenv run python src/main.py"
+
+[packages]
+numpy = "*"
+pillow = "*"
+opencv-python = "*"
+termcolor = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

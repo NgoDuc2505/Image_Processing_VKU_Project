@@ -3,6 +3,7 @@ from PIL import Image
 import cv2 as cv
 import math as m
 import numpy as np
+from termcolor import colored
 
 # ROOT_DIR = 'D:/PersonProject/Project_with_Py/ImageProcessing/'
 ROOT_DIR = os.getcwd().split('src')[0]
@@ -21,8 +22,8 @@ def rootDir():
 
 def makeFolder(path: str=FOLDER_DEFAULT):
     try:
-        if (not os.path.exists(f'{ROOT_DIR}{path}')):
-            os.makedirs(f'{ROOT_DIR}{path}')
+        if (not os.path.exists(f'{ROOT_DIR}/{path}')):
+            os.makedirs(f'{ROOT_DIR}/{path}')
         return path
     except Exception as e:
         print(f"Error when load file: {e}")
@@ -36,7 +37,7 @@ def readImg(path: str) -> cv.typing.MatLike:
     
 def saveImage(newName: str, image: cv.typing.MatLike) -> str:
     try:
-        path = f'{ROOT_DIR}{newName}'
+        path = f'{ROOT_DIR}/{newName}'
         cv.imwrite(path, image)
         return path
     except:
@@ -44,7 +45,7 @@ def saveImage(newName: str, image: cv.typing.MatLike) -> str:
     
 def showImage(path: str):
     try:
-        img = Image.open(f'{ROOT_DIR}{path}')
+        img = Image.open(f'{ROOT_DIR}/{path}')
         img.show()
     except:
         return None
@@ -219,3 +220,22 @@ def isoConfig(imgPath: str, imgNewSaveName: str, valOfv:int = 30, dirSaveImg: st
         return [fullPath1, fullPath2]
     except:
         return None
+    
+#v1.2.0
+
+def rename_file_in_folder(folderName: str, startAt:int) -> int:
+    try:
+        folderFullPath = f"{ROOT_DIR}/{folderName}"
+        startCache = startAt
+        for fileName in os.listdir(folderFullPath):
+            oldName = f"{folderFullPath}/{fileName}"
+            newName = f"{folderFullPath}/g{startAt}.png"
+            if(not os.path.exists(newName)):
+                os.rename(oldName, newName)
+            print(f"Rename: {newName}")
+            startAt += 1
+        imgProcessed = startAt - startCache
+        print(colored(f"{imgProcessed} images have been changed !!!", "black", "on_white"))
+        return imgProcessed
+    except Exception as e:
+        print(colored(f"Invalid path::: {e}", "red", on_color="on_light_grey"))
